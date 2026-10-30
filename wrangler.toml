@@ -1,0 +1,23 @@
+name = "dental-guide-notify"
+main = "server/worker.mjs"
+compatibility_date = "2026-10-29"
+workers_dev = true
+
+[observability]
+enabled = false
+
+[vars]
+# Replace with the exact GitHub Pages origin, no repository path.
+ALLOWED_ORIGINS = "https://YOUR_GITHUB_NAME.github.io"
+NOTIFICATION_CHANNELS = "email"
+
+[[durable_objects.bindings]]
+name = "DELIVERY"
+class_name = "DeliveryCoordinator"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["DeliveryCoordinator"]
+
+# Runtime secrets: IP_HASH_SALT, RESEND_API_KEY, EMAIL_FROM, EMAIL_TO.
+# For WeCom: NOTIFICATION_CHANNELS="wecom" and WECOM_WEBHOOK_URL secret.
