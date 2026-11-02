@@ -25,3 +25,4 @@ new_sqlite_classes = ["DeliveryCoordinator"]
 # and SERVERCHAN_SENDKEY secret. Use "email,serverchan" to require both.
 # For simultaneous recipients use SERVERCHAN_SENDKEYS (newline/comma-separated,
 # maximum 10 unique SCT keys) instead. Store it as a Secret, never in this file.
+# Optional signed mobile ingress: DENTAL_GATEWAY_SECRET Secret, same as Supabase.

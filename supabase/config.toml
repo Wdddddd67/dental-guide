@@ -1,0 +1,4 @@
+# Only this new anonymous questionnaire ingress is public. It forwards signed,
+# bounded requests to the existing validated Worker; it exposes no database API.
+[functions.dental-gateway]
+verify_jwt = false
