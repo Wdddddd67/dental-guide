@@ -45,13 +45,18 @@ export class DeliveryCoordinator{
    if(state&&state.hash!==digest)return json({ok:false,message:'提交内容已变化，请重新填写后发送。'},409);
    if(state&&channels.every(c=>state.delivered.includes(c)))return json({ok:true,id:data.id,acceptedAt:state.acceptedAt});
    if(state&&state.leaseUntil>now)return json({ok:false,message:'上次提交仍在确认中，请稍后重试。'},409,{'Retry-After':'15'});
-   state=state||{hash:digest,acceptedAt:new Date(now).toISOString(),delivered:[],wecomParts:[],expiresAt:now+DAY};state.leaseUntil=now+60000;
+   state=state||{hash:digest,acceptedAt:new Date(now).toISOString(),delivered:[],wecomParts:[],serverchanRecipients:[],expiresAt:now+DAY};state.leaseUntil=now+60000;
    await this.ctx.storage.put('submission',state);await this.ctx.storage.setAlarm(state.expiresAt);return null;});
   if(reserved)return reserved;
-  const pending=channels.filter(c=>!state.delivered.includes(c));const results=await Promise.allSettled(pending.map(c=>deliver(c,data,state.acceptedAt,this.env,fetch,{completedParts:state.wecomParts||[],onPart:async i=>{state.wecomParts=state.wecomParts||[];state.wecomParts.push(i);await this.ctx.storage.put('submission',state);}})));
+  const pending=channels.filter(c=>!state.delivered.includes(c));const results=await Promise.allSettled(pending.map(c=>deliver(c,data,state.acceptedAt,this.env,fetch,{
+   completedParts:state.wecomParts||[],
+   completedRecipients:state.serverchanRecipients||[],
+   onPart:i=>this.ctx.blockConcurrencyWhile(async()=>{state.wecomParts=[...new Set([...(state.wecomParts||[]),i])];await this.ctx.storage.put('submission',state);}),
+   onRecipient:id=>this.ctx.blockConcurrencyWhile(async()=>{state.serverchanRecipients=[...new Set([...(state.serverchanRecipients||[]),id])];await this.ctx.storage.put('submission',state);})
+  })));
   await this.ctx.blockConcurrencyWhile(async()=>{for(let i=0;i<results.length;i++)if(results[i].status==='fulfilled')state.delivered.push(pending[i]);state.leaseUntil=0;await this.ctx.storage.put('submission',state);});
   if(channels.every(c=>state.delivered.includes(c)))return json({ok:true,id:data.id,acceptedAt:state.acceptedAt});
-  if(state.delivered.length)return json({ok:false,message:'部分通知已送达，请重试补发其余渠道；已确认的通知不会重复发送。'},503);
+  if(state.delivered.length||state.serverchanRecipients?.length||state.wecomParts?.length)return json({ok:false,message:'部分通知已确认，请重试补发尚未确认的通知；已确认的接收人不会重复发送。'},503);
   return json({ok:false,message:'通知暂未发送成功，请稍后重试。你的填写内容仍保留在当前页面。'},503);
  }
  async alarm(){await this.ctx.storage.deleteAll();}

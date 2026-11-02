@@ -4,6 +4,8 @@
 
 ## 当前实现
 
+v1.4新增：现已支持所有配置微信同时接收。推荐在Cloudflare Worker运行Secret中设置 `SERVERCHAN_SENDKEYS`，一行一个实际SCT密钥，最多10个不同密钥；非空时替代原 `SERVERCHAN_SENDKEY`。未填写多人值时继续兼容单人配置。操作步骤、补发规则与验证范围见 [MULTI_WECHAT.md](MULTI_WECHAT.md)。
+
 通知默认走 Server酱 Turbo，环境变量通道名为 `serverchan`。邮件和企业微信群接口仍保留，可以日后改回。仅知道普通微信号无法直接推送；需要在通知服务中绑定实际接收的个人微信。
 
 当前版本只适配 Turbo 的 `SCT` 开头 SendKey，不接受 Server酱³ 的 `sctp` 开头 Key。后者是另一套接入方式，不能直接混用。
@@ -35,7 +37,7 @@ npm run notify:check
 
 2026-11-02后续：接收密钥已由本人提供并仅写入本机私有配置，配置检查现在通过。未在源码、文档或上传包中记录实际值。这仍不表示微信已实际收件或网站提交已开通。
 
-接收通道测试命令：`npm run notify:test` 默认只显示虚构问卷预览，不读取密钥、不发送。本人明确确认发送后，执行 `npm run notify:test -- --send` 才向绑定微信发送一条虚构联调问卷。不会自动重试；接口确认后仍须本人核对微信实际收件。该测试只验证接收通道，不验证Cloudflare或网页提交链路。
+接收通道测试命令：`npm run notify:test` 默认只显示虚构问卷预览，不读取密钥、不发送。本人明确确认发送后，执行 `npm run notify:test -- --send` 才向当前配置的全部接收微信分别发送一条虚构联调问卷。不会自动重试；接口确认后仍须本人核对微信实际收件。该测试只验证接收通道，不验证Cloudflare或网页提交链路。
 
 可选的真实本地 Worker 平台检查需先安装开发依赖，再执行 `npm run notify:verify`。该命令只打包、启动本机平台并读取状态，不提交问卷、不部署、不访问推送接口。当前已固定官方 Wrangler 4.156.0；本机下载其 Windows workerd 组件时失败，故此项未验证通过，不能用Node测试桩结果代替原生平台验收。常规 `npm test` 与 `npm run check` 不依赖 Wrangler 安装。
 

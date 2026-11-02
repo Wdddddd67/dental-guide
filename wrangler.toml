@@ -23,3 +23,5 @@ new_sqlite_classes = ["DeliveryCoordinator"]
 # For WeCom: NOTIFICATION_CHANNELS="wecom" and WECOM_WEBHOOK_URL secret.
 # For personal WeChat (ServerChan Turbo): NOTIFICATION_CHANNELS="serverchan"
 # and SERVERCHAN_SENDKEY secret. Use "email,serverchan" to require both.
+# For simultaneous recipients use SERVERCHAN_SENDKEYS (newline/comma-separated,
+# maximum 10 unique SCT keys) instead. Store it as a Secret, never in this file.
