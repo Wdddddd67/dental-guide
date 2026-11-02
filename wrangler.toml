@@ -7,9 +7,9 @@ workers_dev = true
 enabled = false
 
 [vars]
-# Replace with the exact GitHub Pages origin, no repository path.
-ALLOWED_ORIGINS = "https://YOUR_GITHUB_NAME.github.io"
-NOTIFICATION_CHANNELS = "email"
+# Exact GitHub Pages origin; do not append /dental-guide/ here.
+ALLOWED_ORIGINS = "https://wdddddd67.github.io"
+NOTIFICATION_CHANNELS = "serverchan"
 
 [[durable_objects.bindings]]
 name = "DELIVERY"
@@ -21,3 +21,5 @@ new_sqlite_classes = ["DeliveryCoordinator"]
 
 # Runtime secrets: IP_HASH_SALT, RESEND_API_KEY, EMAIL_FROM, EMAIL_TO.
 # For WeCom: NOTIFICATION_CHANNELS="wecom" and WECOM_WEBHOOK_URL secret.
+# For personal WeChat (ServerChan Turbo): NOTIFICATION_CHANNELS="serverchan"
+# and SERVERCHAN_SENDKEY secret. Use "email,serverchan" to require both.

@@ -6,7 +6,13 @@ async function hash(value){return Array.from(new Uint8Array(await crypto.subtle.
 async function readBody(request){const reader=request.body?.getReader();if(!reader)throw new PublicError('请求内容为空。');let length=0,chunks=[];while(true){const {done,value}=await reader.read();if(done)break;length+=value.byteLength;if(length>MAX_BYTES){await reader.cancel();throw new PublicError('提交内容过长，请缩短补充需求。',413);}chunks.push(value);}const all=new Uint8Array(length);let offset=0;for(const chunk of chunks){all.set(chunk,offset);offset+=chunk.byteLength;}try{return JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(all));}catch{throw new PublicError('提交内容格式不正确。');}}
 function corsHeaders(origin){return {'Access-Control-Allow-Origin':origin,'Access-Control-Allow-Methods':'POST, OPTIONS','Access-Control-Allow-Headers':'Content-Type','Access-Control-Max-Age':'600',Vary:'Origin'};}
 export async function handleRequest(request,env){
- const url=new URL(request.url);if(url.pathname!=='/api/submissions')return json({ok:false,message:'接口不存在。'},404);
+ const url=new URL(request.url);
+ if(url.pathname==='/api/health'){
+  if(request.method!=='GET')return json({ok:false,message:'仅支持读取状态。'},405,{Allow:'GET'});
+  const ready=!!(notificationChannels(env)&&env.DELIVERY&&env.IP_HASH_SALT&&String(env.ALLOWED_ORIGINS||'').trim());
+  return json({service:'dental-guide-notify',ready,message:ready?'通知服务配置已就绪，仍需提交测试并确认实际收件。':'通知服务尚未配置完成。'},ready?200:503);
+ }
+ if(url.pathname!=='/api/submissions')return json({ok:false,message:'接口不存在。'},404);
  const origin=request.headers.get('Origin')||'';const allowed=String(env.ALLOWED_ORIGINS||'').split(',').map(s=>s.trim()).filter(Boolean);
  if(!origin||!allowed.includes(origin))return json({ok:false,message:'当前网页未获准提交。'},403);
  const cors=corsHeaders(origin);if(request.method==='OPTIONS')return new Response(null,{status:204,headers:cors});
