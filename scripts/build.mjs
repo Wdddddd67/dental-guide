@@ -12,6 +12,6 @@ export async function build(options={}){
  const connect=apiBaseUrl?' '+new URL(apiBaseUrl).origin:'';
  const csp="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'"+connect+"; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'";
  let html=await readFile(path.join(root,'dist/index.html'),'utf8');html=html.replace('<!-- CSP_INSERT -->','<meta http-equiv="Content-Security-Policy" content="'+csp+'">');await writeFile(path.join(root,'dist/index.html'),html);await writeFile(path.join(root,'dist/.nojekyll'),'');
- console.log('Built dist/ · notification '+(apiBaseUrl&&privacyContact?'configured':'not configured (no fake submissions)'));
+ console.log('Built dist/ · notification '+(apiBaseUrl?'configured':'not configured (no fake submissions)'));
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url))await build();

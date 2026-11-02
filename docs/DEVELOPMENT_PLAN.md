@@ -59,3 +59,16 @@
 - 本人已提供接收密钥，仅保存Git忽略的本地.dev.vars；未复制到公开文件或说明中。notify:check现在无缺失项，微信通道字段有效。
 - 增加notify:test：默认仅预览固定虚构问卷，不读取密钥、不发送；仅显式--send才调用Server酱一次。已核对预览内容与语法；后续按本人明确确认发送了一条虚构联调通知，Server酱接口返回成功，本人已确认微信收到且详情可打开。
 - Cloudflare尚未配置，网页提交仍未开通。配置就绪不能当作微信送达或完整链路验收。
+
+
+## Cloudflare多人微信真实联调已通过
+- 实际服务：https://dental-guide-notify.wdz1367.workers.dev 。GET /api/health返回200、ready:true。
+- 按本人明确授权，仅提交一次虚构牙冠问卷，POST /api/submissions返回200和对应回执，允许来源响应为现有GitHub Pages域名。
+- 本人明确确认所有配置微信均收到且详情正常。这是Cloudflare→全部微信的真实接收验收，尚不能代替网页端表单最终提交验收。
+- 本轮不公开此前测试邮箱。正式接通网页仍需PUBLIC_API_BASE_URL、团队接收说明、本人允许公开的联系途径；联系途径的问题已提出，等待回复。
+
+## v1.4.1 不公开个人联系方式
+- 用户明确“不要公开微信号”，测试收件邮箱同样不擅自公开。撤除由先前实现增加的公开联系方式提交门槛，PUBLIC_PRIVACY_CONTACT改为可选。
+- 仍要求有效API、完整测试、主动同意和真实回执；无公开联系途径时仅显示保存回执供后续核对的说明，不虚构联系渠道或在线删除功能。
+- 操作位置是GitHub下方Repository variables的New repository variable。只需PUBLIC_API_BASE_URL和PUBLIC_NOTIFICATION_LABEL；接收密钥继续保存在Cloudflare Secret。
+- 已在375宽度浏览器用隔离接口验证：公开联系方式为空时提交按钮可用、未同意被拦截、模拟失败保留内容、同意后获得隔离回执、用途文案无个人微信号或邮箱。没有外发新的真实通知。说明见CONNECT_LIVE_WEB.md。

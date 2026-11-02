@@ -38,10 +38,10 @@ GitHub Pages 是静态托管，不能在其中隐藏密钥或直接运行邮件�
 | Variable | 示例／说明 |
 |---|---|
 | PUBLIC_API_BASE_URL | 实际 Worker HTTPS 根地址，不能带 /api/submissions、密钥或其他路径 |
-| PUBLIC_PRIVACY_CONTACT | 可公开的项目联系邮箱、联系网址或实际联系途径；与私有收件邮箱可不同 |
+| PUBLIC_PRIVACY_CONTACT | 可选，当前留空；仅在本人明确允许公开联系途径时填写 |
 | PUBLIC_NOTIFICATION_LABEL | 例如“看牙有谱项目负责人（邮件）” |
 
-PUBLIC_ 值会进入公开页面；不要把仅供收件的私人邮箱放入公开变量，除非你明确愿意公开。缺少 API 或项目联系信息时，前端会禁用发送而不假装成功。
+PUBLIC_ 值会进入公开页面；不要把仅供收件的私人邮箱或微信号放入公开变量，除非你明确愿意公开。v1.4.1起只在缺少有效API时禁用发送，公开联系方式不是提交前置条件；仍须明确同意用途，并收到真实服务回执才显示成功。
 
 仓库 Settings → Pages → Source 选择 GitHub Actions。推送 main 或手动运行“Deploy web to GitHub Pages”。工作流会测试、静态检查、构建并部署 dist/。部署网址以 Actions / Pages 后台的实际输出为准，不提前猜测上线成功。
 
