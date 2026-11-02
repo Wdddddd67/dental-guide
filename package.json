@@ -1,12 +1,17 @@
 {
   "name": "dental-guide-web",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "build": "node scripts/build.mjs",
     "test": "node --test tests/*.test.mjs",
-    "check": "node scripts/check.mjs"
+    "check": "node scripts/check.mjs",
+    "notify:check": "node scripts/check-notification-config.mjs",
+    "notify:verify": "node scripts/verify-notification-worker.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "4.156.0"
   }
 }
